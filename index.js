@@ -9,16 +9,14 @@ const { dbConnection } = require('./database/config')
 const app = express();
 // Configurando cors
 app.use(cors())
+// lectur y parseo del json
+app.use(express.json());
 // llamando a la bd
 dbConnection();
 // Rutas
-app.get('/', (req, res) => {
-    res.json({
-        ok: true,
-        msg: 'Hola mundo'
-    }
-    )
-})
+app.use('/api/usuarios',require('./routes/usuarios'))
+app.use('/api/login',require('./routes/login'))
+
 
 app.listen(process.env.PORT, () => {
     console.log("servidor corriendo en el puerto ",process.env.PORT)
