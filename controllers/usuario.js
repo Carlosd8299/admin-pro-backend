@@ -3,13 +3,33 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const res = require('express/lib/response');
 const { generarJWT } = require('../helpers/jwt');
+
+
 const getUsuarios = async (req, res) => {
 
-    const usuario = await Usuario.find({}, 'nombre email rol');
+    // trayendo el query param http://localhost:3000/api/usuarios?desde=5 
+    // este parametro es opcional, si no se envia entonces uso el cero con la condiccion || 0
+    const desde = Number(req.query.desde) || 0;
+    // const usuario = await Usuario.find({}, 'nombre email rol')
+    //                                 .skip(desde)
+    //                                 .limit(5);
+    // const total = await usuario.count();
+
+    // Lo que se hace aqui es ejecutar las dos promesas una despues de la otra,
+    // para en caso de uqe existan muchos registros no se genere delay
+    // se almacenan los resultados en el mismmo orden del array
+    const [usuarios, total] = await Promise.all([
+        Usuario.find({}, 'nombre email rol img')
+            .skip(desde)
+            .limit(5),
+        Usuario.countDocuments()
+    ])
+
     res.json({
         ok: true,
-        usuarios: usuario,
-        uid: req.uid
+        usuarios,
+        uid: req.uid,
+        total
     }
     )
 }
@@ -36,7 +56,7 @@ const crearUsuarios = async (req, res = response) => {
             const token = await generarJWT(Usuariobd._id);
             res.json({
                 ok: true,
-                usuario, 
+                usuario,
                 token
             }
             )
