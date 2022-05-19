@@ -7,12 +7,12 @@ const router = Router();
 
 router.get('/', getMedicos)
 router.post('/', [validarJWT
-        , check('nombre','El nombre del medico es necesario').not().isEmpty()
-        , check('hospital','El Id del hospital debe ser valido').isMongoId()
-        , check('email','El email del medico es necesario').not().isEmpty()
-        , validarCampos]
+    , check('nombre', 'El nombre del medico es necesario').not().isEmpty()
+    , check('hospital', 'El Id del hospital debe ser valido').isMongoId()
+    , check('email', 'El email del medico es necesario').not().isEmpty()
+    , validarCampos]
     , crearMedicos)
-router.put('/:id', [], updateMedicos)
-router.delete('/:id', [], deleteMedicos)
+router.put('/:id', [validarJWT, check('hospital', 'El Id del hospital debe ser valido').isMongoId(), validarCampos], updateMedicos)
+router.delete('/:id', [validarJWT], deleteMedicos)
 
 module.exports = router;

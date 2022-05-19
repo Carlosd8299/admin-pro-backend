@@ -21,7 +21,8 @@ const getUsuarios = async (req, res) => {
     const [usuarios, total] = await Promise.all([
         Usuario.find({}, 'nombre email rol img')
             .skip(desde)
-            .limit(5),
+        // .limit(5)
+        ,
         Usuario.countDocuments()
     ])
 
@@ -86,19 +87,19 @@ const actualizarUsuarios = async (req, res = response) => {
 
         // Actualizaciones
         const { password, google, email, ...campos } = req.body;
-        if (usuarioDb.email !== email) {
 
+        if (usuarioDb.email !== email) {
             const existeEmail = await Usuario.findOne({ email });
             if (existeEmail) {
-
-                return res.status(404).json({
+                res.status(404).json({
                     ok: false,
                     msg: 'Ya existe usuario con ese email'
                 });
-
+            } else {
+                // actualizo el email que viene del body
+                campos.email = email;
             }
         }
-        campos.email = email;
 
         const usuarioActualizado = await Usuario.findOneAndUpdate(uid, campos, { new: true });
 
@@ -110,7 +111,7 @@ const actualizarUsuarios = async (req, res = response) => {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'Error inesperado'
+            msg: error
         });
     }
 }

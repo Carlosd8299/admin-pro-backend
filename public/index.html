@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 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-->
+    <!-- <meta name="google-signin-client_id"
+        content="1032075412794-e9jcu0g4qgan98u9nobr2j98ssb1s6i0.apps.googleusercontent.com"> -->
+    <title>Demo log in</title>
+</head>
+
+<body>
+    <h1 style="color: blue">google sign in</h1>
+    <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+    <!-- <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script> -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <script>
+        function handleCredentialResponse(response) {
+          console.log("Encoded JWT ID token: " + response.credential);
+        }
+        window.onload = function () {
+          google.accounts.id.initialize({
+            client_id: "1032075412794-e9jcu0g4qgan98u9nobr2j98ssb1s6i0.apps.googleusercontent.com",
+            callback: handleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+            document.getElementById("buttonDiv"),
+            { theme: "outline", size: "large" }  // customization attributes
+          );
+          google.accounts.id.prompt(); // also display the One Tap dialog
+        }
+    </script>
+    <div id="buttonDiv"></div> 
+
+    <!-- <a href="#" onclick="signOut();">Sign out</a> -->
+    <!-- <script>
+
+        function init() {
+            gapi.load('auth2', function () {
+                /* Ready. Make a call to gapi.auth2.init or some other API */
+            });
+        }
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+        }
+        //sign out.
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+    </script> -->
+</body>
+
+</html>

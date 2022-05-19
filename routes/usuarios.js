@@ -13,6 +13,7 @@ router.post('/', [
     // el custom middleware se llama despues de todos los check
     validarCampos
 ], crearUsuarios)
+
 router.put('/:id', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),

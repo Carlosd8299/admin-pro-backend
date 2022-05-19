@@ -13,6 +13,8 @@ app.use(cors())
 app.use(express.json());
 // llamando a la bd
 dbConnection();
+//directorio publico
+app.use(express.static('public'))
 // Rutas
 app.use('/api/usuarios',require('./routes/usuarios'))
 app.use('/api/login',require('./routes/login'))
