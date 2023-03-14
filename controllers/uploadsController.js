@@ -56,19 +56,23 @@ const fileUpload = (req, res = response) => {
 }
 
 
-const RetornaImagen  = (req, res = response) => {
-    
+const RetornaImagen = ( req, res = response ) => {
+
     const tipo = req.params.tipo;
     const foto = req.params.foto;
-    const pathImg = path.join(__dirname, `../uploads/${tipo}/${foto}`);
-    if(fs.existsSync(pathImg)){
-      
-    }else{
-        const pathImg = path.join(__dirname, `../uploads/sources/noimg.jpg`);
-        res.sendFile(pathImg);
+
+    const pathImg = path.join( __dirname, `../uploads/${ tipo }/${ foto }` );
+
+    // imagen por defecto
+    if ( fs.existsSync( pathImg ) ) {
+        res.sendFile( pathImg );
+    } else {
+        const pathImg = path.join( __dirname, `../uploads/no-img.jpg` );
+        res.sendFile( pathImg );
     }
 
-  
-    
 }
+
+
+  
 module.exports = { fileUpload ,RetornaImagen};

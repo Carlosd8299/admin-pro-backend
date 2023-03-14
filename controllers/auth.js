@@ -83,30 +83,35 @@ const loginGoogle = async (req, res = response) => {
     }
 }
 
-const renewToken = async(req, res = response) => {
+const renewToken = async (req, res = response) => {
 
-    try{
+    try {
         const uid = req.uid;
 
         // Generar el token 
         const token = await generarJWT(uid);
-    
+        // Obtener el usuario por UID
+        const usuario = await Usuario.findById(uid);
         res.json({
             ok: true,
-    
+            token,
+            usuario
         })
-    }catch(error){
+    } catch (error) {
         const uid = req.uid;
 
         // Generar el token 
         const token = await generarJWT(uid);
-    
+
         res.status(500).json({
             ok: false,
         })
     }
-    // tomando el uid que vine en el req. Porque pasa por el middleware del token
-   
+
+
 }
 
-module.exports = { login, loginGoogle,renewToken };
+
+
+
+module.exports = { login, loginGoogle, renewToken };

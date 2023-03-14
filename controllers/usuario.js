@@ -71,49 +71,109 @@ const crearUsuarios = async (req, res = response) => {
 
 
 }
+// const actualizarUsuarios = async (req, res = response) => {
+//     const uid = req.params.id;
+
+//     try {
+
+//         const usuarioDb = await Usuario.findById(uid);
+//         if (!usuarioDb) {
+//             return res.status(404).json({
+//                 ok: false,
+//                 msg: 'Error usuario no existe'
+//             });
+//         }
+//         // TODO: Comprobar token y si el usuario es correcto
+
+//         // Actualizaciones
+//         const { password, google, email, ...campos } = req.body;
+
+//         if (usuarioDb.email !== email) {
+//             const existeEmail = await Usuario.findOne({ email });
+//             if (existeEmail) {
+//                 res.status(404).json({
+//                     ok: false,
+//                     msg: 'Ya existe usuario con ese email'
+//                 });
+//             } else {
+//                 // actualizo el email que viene del body
+//                 campos.email = email;
+//             }
+//         }
+
+//         const usuarioActualizado = await Usuario.findOneAndUpdate(uid, campos, { new: true });
+//         const token = await generarJWT(uid);
+//         res.json({
+//             ok: true,
+//             uid: usuarioActualizado,
+//             token
+//         })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({
+//             ok: false,
+//             msg: error
+//         });
+//     }
+// }
+
 const actualizarUsuarios = async (req, res = response) => {
+
+    // TODO: Validar token y comprobar si es el usuario correcto
+
     const uid = req.params.id;
+
 
     try {
 
-        const usuarioDb = await Usuario.findById(uid);
-        if (!usuarioDb) {
+        const usuarioDB = await Usuario.findById( uid );
+
+        if ( !usuarioDB ) {
             return res.status(404).json({
                 ok: false,
-                msg: 'Error usuario no existe'
+                msg: 'No existe un usuario por ese id'
             });
         }
-        // TODO: Comprobar token y si el usuario es correcto
 
         // Actualizaciones
         const { password, google, email, ...campos } = req.body;
 
-        if (usuarioDb.email !== email) {
+        if ( usuarioDB.email !== email ) {
+
             const existeEmail = await Usuario.findOne({ email });
-            if (existeEmail) {
-                res.status(404).json({
+            if ( existeEmail ) {
+                return res.status(400).json({
                     ok: false,
-                    msg: 'Ya existe usuario con ese email'
+                    msg: 'Ya existe un usuario con ese email'
                 });
-            } else {
-                // actualizo el email que viene del body
-                campos.email = email;
             }
         }
+        
+        if ( !usuarioDB.google ){
+            campos.email = email;
+        } else if ( usuarioDB.email !== email ) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Usuario de google no pueden cambiar su correo'
+            });
+        }
 
-        const usuarioActualizado = await Usuario.findOneAndUpdate(uid, campos, { new: true });
+        const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );
 
         res.json({
             ok: true,
-            uid: usuarioActualizado
-        })
+            usuario: usuarioActualizado
+        });
+
+        
     } catch (error) {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: error
-        });
+            msg: 'Error inesperado'
+        })
     }
+
 }
 
 
