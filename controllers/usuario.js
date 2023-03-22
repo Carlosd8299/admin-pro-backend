@@ -21,7 +21,7 @@ const getUsuarios = async (req, res) => {
     const [usuarios, total] = await Promise.all([
         Usuario.find({}, 'nombre email rol img')
             .skip(desde)
-        // .limit(5)
+            .limit(5)
         ,
         Usuario.countDocuments()
     ])
@@ -126,9 +126,9 @@ const actualizarUsuarios = async (req, res = response) => {
 
     try {
 
-        const usuarioDB = await Usuario.findById( uid );
+        const usuarioDB = await Usuario.findById(uid);
 
-        if ( !usuarioDB ) {
+        if (!usuarioDB) {
             return res.status(404).json({
                 ok: false,
                 msg: 'No existe un usuario por ese id'
@@ -138,34 +138,34 @@ const actualizarUsuarios = async (req, res = response) => {
         // Actualizaciones
         const { password, google, email, ...campos } = req.body;
 
-        if ( usuarioDB.email !== email ) {
+        if (usuarioDB.email !== email) {
 
             const existeEmail = await Usuario.findOne({ email });
-            if ( existeEmail ) {
+            if (existeEmail) {
                 return res.status(400).json({
                     ok: false,
                     msg: 'Ya existe un usuario con ese email'
                 });
             }
         }
-        
-        if ( !usuarioDB.google ){
+
+        if (!usuarioDB.google) {
             campos.email = email;
-        } else if ( usuarioDB.email !== email ) {
+        } else if (usuarioDB.email !== email) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Usuario de google no pueden cambiar su correo'
             });
         }
 
-        const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
 
         res.json({
             ok: true,
             usuario: usuarioActualizado
         });
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
