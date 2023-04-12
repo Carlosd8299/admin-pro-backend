@@ -5,7 +5,7 @@ const Medico = require('../models/medicos')
 const getMedicos = async (req, res = response) => {
     try {
         const medicos = await Medico.find({},)
-            .populate('usuario', 'nombre email')
+            .populate('usuario', 'nombre _id img')
             .populate('hospital', 'nombre');
         res.status(200).json({ ok: true, medicos, msg: 'Lista de medicos' })
     } catch (error) {
@@ -13,6 +13,17 @@ const getMedicos = async (req, res = response) => {
     }
 }
 
+const getMedicoById = async (req, res = response) => {
+    try {
+        const idMedico = req.params.id;
+        const medico = await Medico.findById(idMedico)
+                                    .populate('usuario', 'nombre _id img')
+                                    .populate('hospital', 'nombre');
+        res.status(200).json({ ok: true, medico, msg: '' })
+    } catch (error) {
+        res.status(200).json({ ok: false, medico: undefined, msg: 'Error' })
+    }
+}
 const crearMedicos = async (req, res = response) => {
 
     // siempre puedo obtener el uid de req.uid porque me lo devuelve despues de pasar el middleware de validartoken
@@ -72,4 +83,4 @@ const deleteMedicos = async (req, res = response) => {
 }
 
 
-module.exports = { getMedicos, crearMedicos, updateMedicos, deleteMedicos }
+module.exports = { getMedicos, crearMedicos, updateMedicos, deleteMedicos ,getMedicoById}

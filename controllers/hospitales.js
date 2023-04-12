@@ -3,7 +3,7 @@ const Hospital = require('../models/hospital')
 
 const getHospitales = async (req, res = response) => {
     try {
-        const hospitales = await Hospital.find({}, 'nombre').populate('usuario', 'nombre email');
+        const hospitales = await Hospital.find({}, 'nombre img').populate('usuario', 'nombre email');
         res.status(200).json({ ok: true, hospitales, msg: 'GetHospitales' })
     } catch (error) {
         res.status(200).json({ ok: false, msg: 'Error al listar hospital' })
